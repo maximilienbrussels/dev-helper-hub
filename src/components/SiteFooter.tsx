@@ -277,7 +277,9 @@ export function SiteFooter() {
           <LocalLink to={pathFor("legal", lang)} className={LINK}>
             {{ nl: "Wettelijke vermeldingen", fr: "Mentions légales", en: "Legal notice" }[lang]}
           </LocalLink>
+          <PwaInstallButton />
         </nav>
+
         {/* Statische copyrightregel — geen verborgen doorverwijzing naar het beheerportaal. */}
         <p className="mt-4 uppercase tracking-[0.25em]">
           © 2026 Maxilien.{" "}
