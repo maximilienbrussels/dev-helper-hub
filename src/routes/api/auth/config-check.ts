@@ -113,7 +113,7 @@ export const Route = createFileRoute("/api/auth/config-check")({
 
         const ok = db && mailReady && missing.length === 0 && oauth.warnings.length === 0;
         if (!ok) {
-          console.error("[Config Check]", { missing, dbError, warnings: oauth.warnings });
+          console.error("[Config Check]", { missing, dbError, mailError, warnings: oauth.warnings });
         }
 
         return json(
@@ -121,6 +121,8 @@ export const Route = createFileRoute("/api/auth/config-check")({
             status: ok ? "ok" : "error",
             db,
             ...(dbError ? { db_error: dbError } : {}),
+            mail: { ready: mailReady, transport: mailTransport },
+            ...(mailError ? { mail_error: mailError } : {}),
             secrets_present: missing.length === 0,
             secrets,
             ...(missing.length ? { missing_keys: missing } : {}),
