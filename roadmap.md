@@ -40,3 +40,9 @@
 - [x] Gedeelde bouwstenen `src/components/veld/field-ui.tsx`
 - [x] Vandaag, Aanvragen, Diensten, Meer op de nieuwe stijl
 - [x] Verfijnde onderbalk met zwevende scanknop
+
+## Veld-app afwerking (afgehandeld)
+- [x] "Openen in de veld-app" in het accountmenu van het beheer
+- [x] Veldtabbladen verborgen volgens rechten van de medewerker
+- [x] Discreet installatie-icoon in de voettekst i.p.v. het opdringerige venster
+- [x] Losse shells (publiek/beheer/veld) lazy geladen; routes apart gesplitst
