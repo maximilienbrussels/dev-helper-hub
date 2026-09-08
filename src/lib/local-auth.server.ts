@@ -166,6 +166,16 @@ export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
 }
 
+/**
+ * Is de auth-laag bruikbaar? Zonder databankverbinding bestaan er géén
+ * accounts: dan is "wachtwoord fout" een misleidende boodschap en moeten we
+ * een storing melden.
+ */
+export async function authBackendReady(): Promise<boolean> {
+  if (!hasDatabase()) return false;
+  return ensureAuthSchema();
+}
+
 /** Controleert e-mail + wachtwoord. Geeft null bij een foute combinatie. */
 export async function verifyPassword(
   email: string,

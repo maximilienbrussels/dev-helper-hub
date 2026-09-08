@@ -21,6 +21,13 @@ export const loginWithPassword = createServerFn({ method: "POST" })
     const auth = await import("./local-auth.server");
     const guard = await import("./email-guard.server");
     await guard.guardRate("login", data.email).catch(() => undefined);
+    // Eerst de storingscheck: zonder databank bestaat er geen enkel account en
+    // zou elke poging onterecht "wachtwoord klopt niet" opleveren.
+    if (!(await auth.authBackendReady())) {
+      throw new Error(
+        "Aanmelden is tijdelijk niet beschikbaar (de accountdatabank is onbereikbaar). Probeer het straks opnieuw.",
+      );
+    }
     const result = await auth.verifyPassword(data.email, data.password);
     if (!result) {
       throw new Error("E-mailadres of wachtwoord klopt niet.");
