@@ -63,7 +63,7 @@ const qrSchema = z.object({
 /** Camera / QR-link: UUID + handtekening. */
 export const redeemPickupQr = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => qrSchema.parse(d))
+  .validator((d: unknown) => qrSchema.parse(d))
   .handler(async ({ data, context }): Promise<RedeemResult> => {
     await requirePermission(context, "manage_orders");
 
@@ -85,7 +85,7 @@ const codeSchema = z.object({ code: z.string().trim().min(4).max(32) });
 /** Balie: de korte code (of volledige referentie) onder de QR intypen. */
 export const redeemPickupCode = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => codeSchema.parse(d))
+  .validator((d: unknown) => codeSchema.parse(d))
   .handler(async ({ data, context }): Promise<RedeemResult> => {
     await requirePermission(context, "manage_orders");
     const { findOrderByCode, collectOrder } = await import("./pickup-desk.server");
@@ -99,7 +99,7 @@ const idSchema = z.object({ orderId: z.number().int().positive() });
 /** Balie: rechtstreeks afvinken in de lijst met openstaande afhalingen. */
 export const markPickupCollected = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => idSchema.parse(d))
+  .validator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }): Promise<RedeemResult> => {
     await requirePermission(context, "manage_orders");
     const { collectOrder } = await import("./pickup-desk.server");

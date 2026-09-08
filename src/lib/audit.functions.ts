@@ -29,7 +29,7 @@ async function sql() {
 /** Wijzigingslogboek, nieuwste eerst. */
 export const listAuditLog = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z
       .object({
         entity: z.string().max(40).optional(),
@@ -97,7 +97,7 @@ const PERMISSION_FOR: Record<TrashRow["kind"], string> = {
 /** Zet een zacht verwijderd item terug. */
 export const restoreItem = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z.object({ kind: z.enum(["booking", "media", "product"]), id: z.string().min(1) }).parse(input),
   )
   .handler(async ({ data, context }) => {

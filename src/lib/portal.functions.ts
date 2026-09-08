@@ -81,7 +81,7 @@ export const fetchPortalData = createServerFn({ method: "GET" })
 
 export const setBookingStatus = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => statusInput.parse(d))
+  .validator((d: unknown) => statusInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_requests");
     const { error } = await context.supabase
@@ -94,7 +94,7 @@ export const setBookingStatus = createServerFn({ method: "POST" })
 
 export const setCheckIn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), arrived: z.boolean() }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -109,7 +109,7 @@ export const setCheckIn = createServerFn({ method: "POST" })
 
 export const addBookingNote = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => noteInput.parse(d))
+  .validator((d: unknown) => noteInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_requests");
     const { data: profile } = await context.supabase
@@ -132,7 +132,7 @@ export const addBookingNote = createServerFn({ method: "POST" })
 
 export const createBooking = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => bookingInput.parse(d))
+  .validator((d: unknown) => bookingInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const { error } = await context.supabase.from("bookings").insert({
@@ -156,7 +156,7 @@ export const createBooking = createServerFn({ method: "POST" })
 
 export const blockSlot = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => blockInput.parse(d))
+  .validator((d: unknown) => blockInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const { error } = await context.supabase.from("bookings").insert({
@@ -178,7 +178,7 @@ export const blockSlot = createServerFn({ method: "POST" })
 
 export const deleteBooking = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => idInput.parse(d))
+  .validator((d: unknown) => idInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_requests");
     // Zacht verwijderen: 30 dagen herstelbaar via Logboek & prullenbak.
@@ -201,7 +201,7 @@ export const deleteBooking = createServerFn({ method: "POST" })
 
 export const saveService = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => serviceInput.parse(d))
+  .validator((d: unknown) => serviceInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_services");
     const { dbAdmin } = await import("@/lib/db-admin.server");
@@ -220,7 +220,7 @@ export const saveService = createServerFn({ method: "POST" })
 
 export const createService = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => serviceCreateInput.parse(d))
+  .validator((d: unknown) => serviceCreateInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_services");
     const { dbAdmin } = await import("@/lib/db-admin.server");
@@ -240,7 +240,7 @@ export const createService = createServerFn({ method: "POST" })
 
 export const deleteService = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => idInput.parse(d))
+  .validator((d: unknown) => idInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_services");
     const { dbAdmin } = await import("@/lib/db-admin.server");
@@ -252,7 +252,7 @@ export const deleteService = createServerFn({ method: "POST" })
 /** Bewaart de nieuwe sortering van de diensten (volgorde op de website). */
 export const reorderServices = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => reorderInput.parse(d))
+  .validator((d: unknown) => reorderInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_services");
     const { dbAdmin } = await import("@/lib/db-admin.server");
@@ -268,7 +268,7 @@ export const reorderServices = createServerFn({ method: "POST" })
 
 export const toggleServiceActive = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), active: z.boolean() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid(), active: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_services");
     const { dbAdmin } = await import("@/lib/db-admin.server");
@@ -284,7 +284,7 @@ export const toggleServiceActive = createServerFn({ method: "POST" })
 
 export const saveStaffMember = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => staffInput.parse(d))
+  .validator((d: unknown) => staffInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_team");
     if (data.id === context.userId && data.role !== "admin") {
@@ -310,7 +310,7 @@ export const saveStaffMember = createServerFn({ method: "POST" })
 /** Invite-only account creation: admins invite colleagues by e-mail. */
 export const inviteStaffMember = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().trim().email().max(255),

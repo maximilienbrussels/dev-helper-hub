@@ -15,7 +15,7 @@ const langInput = (d: unknown) => {
 
 /** Wachtwoord vergeten (klant): stuurt een herstellink (altijd hetzelfde antwoord). */
 export const requestPasswordReset = createServerFn({ method: "POST" })
-  .inputValidator(langInput)
+  .validator(langInput)
   .handler(async ({ data }) => {
     await (await import("./email-guard.server")).guardRate("pwreset", data.email);
     return (await import("./auth-email.server")).sendAuthLink(
@@ -29,7 +29,7 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
 
 /** Bevestigingsmail (opnieuw) versturen na registratie. */
 export const requestEmailVerification = createServerFn({ method: "POST" })
-  .inputValidator(langInput)
+  .validator(langInput)
   .handler(async ({ data }) => {
     await (await import("./email-guard.server")).guardRate("verifymail", data.email);
     return (await import("./auth-email.server")).sendAuthLink(
@@ -43,7 +43,7 @@ export const requestEmailVerification = createServerFn({ method: "POST" })
 
 /** Inloglink voor klanten (sjabloon 7) — bevestigt tegelijk het e-mailadres. */
 export const requestMagicLink = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => {
+  .validator((d: unknown) => {
     const base = langInput(d);
     const next = (d as { next?: unknown } | null)?.next;
     return { ...base, next: typeof next === "string" && next.startsWith("/") ? next : "/account" };
@@ -64,7 +64,7 @@ export const requestMagicLink = createServerFn({ method: "POST" })
  * geeft de server meteen een sessietoken terug.
  */
 export const verifyLoginCode = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().trim().toLowerCase().email().max(254),
@@ -91,7 +91,7 @@ export const verifyLoginCode = createServerFn({ method: "POST" })
  * sessietoken (JWT). De browser bewaart die token en is daarmee ingelogd.
  */
 export const resolveLoginLink = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({ token: z.string().min(6).max(300), next: z.string().optional() })
       .parse(d),
@@ -122,7 +122,7 @@ async function isStaffEmail(email: string): Promise<boolean> {
  * krijgen exact hetzelfde antwoord, maar geen mail.
  */
 export const requestTeamPasswordReset = createServerFn({ method: "POST" })
-  .inputValidator(langInput)
+  .validator(langInput)
   .handler(async ({ data }) => {
     await (await import("./email-guard.server")).guardRate("team-pwreset", data.email);
     if (!(await isStaffEmail(data.email))) return { ok: true as const };
@@ -137,7 +137,7 @@ export const requestTeamPasswordReset = createServerFn({ method: "POST" })
 
 /** Inloglink voor medewerkers (sjabloon 3), uitsluitend voor teamadressen. */
 export const requestTeamMagicLink = createServerFn({ method: "POST" })
-  .inputValidator(langInput)
+  .validator(langInput)
   .handler(async ({ data }) => {
     await (await import("./email-guard.server")).guardRate("team-magiclink", data.email);
     if (!(await isStaffEmail(data.email))) return { ok: true as const };
@@ -157,7 +157,7 @@ export const requestTeamMagicLink = createServerFn({ method: "POST" })
  * bestaan en kan de klant meteen inloggen met zijn wachtwoord.
  */
 export const registerAccount = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().trim().toLowerCase().email().max(254),
@@ -195,7 +195,7 @@ const notifyInput = (d: unknown) =>
 /** Beveiligingsmelding na een geslaagde wachtwoordwijziging (sjabloon 8). */
 export const notifyPasswordChanged = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator(notifyInput)
+  .validator(notifyInput)
   .handler(async ({ data, context }) => {
     const claims = context.claims as { email?: string; name?: string } | null;
     const email = (claims?.email ?? "").trim();
@@ -211,7 +211,7 @@ export const notifyPasswordChanged = createServerFn({ method: "POST" })
  */
 export const notifyWelcome = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator(notifyInput)
+  .validator(notifyInput)
   .handler(async ({ data, context }) => {
     const claims = context.claims as { email?: string; name?: string } | null;
     const email = (claims?.email ?? "").trim();
@@ -231,7 +231,7 @@ export const notifyWelcome = createServerFn({ method: "POST" })
  * preview/dev de code en link mee zodat het team meteen binnen kan.
  */
 export const requestTeamLoginCode = createServerFn({ method: "POST" })
-  .inputValidator(langInput)
+  .validator(langInput)
   .handler(async ({ data }) => {
     await (await import("./email-guard.server")).guardRate("team-magiclink", data.email);
     const server = await import("./auth-email.server");
@@ -263,7 +263,7 @@ export const requestTeamLoginCode = createServerFn({ method: "POST" })
 
 /** Tijdelijk een Brevo-sleutel instellen om live verzending te testen (preview/dev). */
 export const setBrevoKeyForSession = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ key: z.string().trim().min(10).max(300) }).parse(d))
+  .validator((d: unknown) => z.object({ key: z.string().trim().min(10).max(300) }).parse(d))
   .handler(async ({ data }) => {
     const server = await import("./auth-email.server");
     if (!(await server.isPreviewEnvironment())) {

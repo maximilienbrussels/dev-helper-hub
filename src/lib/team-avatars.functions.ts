@@ -28,7 +28,7 @@ const saveSchema = z.object({
 
 export const setTeamAvatar = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => saveSchema.parse(d))
+  .validator((d: unknown) => saveSchema.parse(d))
   .handler(async ({ data, context }): Promise<TeamAvatarMap> => {
     await requirePermission(context, "manage_team");
     const { saveTeamAvatar, loadTeamAvatars } = await import("./team-avatars.server");

@@ -71,7 +71,7 @@ export const fetchEmailAdmin = createServerFn({ method: "GET" })
 
 export const saveSmtpConfig = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         host: z.string().trim().max(200),
@@ -162,7 +162,7 @@ export const fetchContactRoutes = createServerFn({ method: "GET" })
 /** Bewaart de ontvangers van één categorie. */
 export const saveContactRouteFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         key: z
@@ -187,7 +187,7 @@ export const saveContactRouteFn = createServerFn({ method: "POST" })
 /** Verwijdert een categorie uit de mailroutering. */
 export const deleteContactRouteFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ key: z.string().trim().min(1).max(40) }).parse(d))
+  .validator((d: unknown) => z.object({ key: z.string().trim().min(1).max(40) }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { deleteContactRoute } = await import("./contact-routes.server");
@@ -249,7 +249,7 @@ function sampleData(template: TestTemplateKind): Record<string, unknown> {
  */
 export const sendEmailTemplateTests = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         to: z.string().trim().email(),
@@ -303,7 +303,7 @@ export type SystemEmailPreviewDto = {
  */
 export const fetchSystemEmailPreviews = createServerFn({ method: "GET" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ langs: z.array(z.enum(TEST_LANGS)).min(1).max(TEST_LANGS.length) }).parse(d),
   )
   .handler(async ({ data, context }): Promise<{ previews: SystemEmailPreviewDto[] }> => {
@@ -334,7 +334,7 @@ export const fetchEmailRoutingSettings = createServerFn({ method: "GET" })
 /** Bewaart het globale vangnetadres (herstelbestemming voor élke melding). */
 export const saveFallbackEmailFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ email: z.string().trim().email() }).parse(d))
+  .validator((d: unknown) => z.object({ email: z.string().trim().email() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { saveFallbackEmail } = await import("./email-settings.server");
@@ -345,7 +345,7 @@ export const saveFallbackEmailFn = createServerFn({ method: "POST" })
 /** Inzendingen met filters (formuliersoort, status, datum, vrij zoeken). */
 export const fetchSubmissions = createServerFn({ method: "GET" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         form: z.string().max(40).optional(),
@@ -372,7 +372,7 @@ export const fetchSubmissions = createServerFn({ method: "GET" })
  */
 export const resendSubmission = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({ id: z.string().uuid(), to: z.string().trim().email().optional() })
       .parse(d),
@@ -406,7 +406,7 @@ export const resendSubmission = createServerFn({ method: "POST" })
 /** Corrigeert het e-mailadres van een inzending (zonder te herversturen). */
 export const updateSubmissionRecipient = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), email: z.string().trim().email() }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -420,7 +420,7 @@ export const updateSubmissionRecipient = createServerFn({ method: "POST" })
 /** Verwijdert één regel uit het inzendingenlogboek. */
 export const deleteSubmissionFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { deleteSubmission } = await import("./email-settings.server");
@@ -432,7 +432,7 @@ export const deleteSubmissionFn = createServerFn({ method: "POST" })
 /** Ruimt in één klik alle mislukte óf alle verstuurde logregels op. */
 export const cleanupSubmissionsFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ scope: z.enum(["failed", "sent"]) }).parse(d))
+  .validator((d: unknown) => z.object({ scope: z.enum(["failed", "sent"]) }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { cleanupSubmissions } = await import("./email-settings.server");
@@ -446,7 +446,7 @@ export const cleanupSubmissionsFn = createServerFn({ method: "POST" })
  */
 export const sendTemplateHtmlTest = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         to: z.string().trim().email(),

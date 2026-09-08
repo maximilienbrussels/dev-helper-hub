@@ -195,7 +195,7 @@ const updateBookingInput = z.object({
 /** Bestaande reservatie volledig bewerken (datum, uren, ruimte, aantal, prijs, status). */
 export const updateBooking = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => updateBookingInput.parse(d))
+  .validator((d: unknown) => updateBookingInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -221,7 +221,7 @@ const updateBlockInput = z.object({
 /** Bestaande blokkade bewerken. */
 export const updateBlock = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => updateBlockInput.parse(d))
+  .validator((d: unknown) => updateBlockInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -237,7 +237,7 @@ export const updateBlock = createServerFn({ method: "POST" })
 /** Blokkade verwijderen. */
 export const deleteBlock = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -256,7 +256,7 @@ const assignInput = z.object({
 /** Eén teamlid met taak toewijzen aan een reservatie. */
 export const assignStaffToBooking = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => assignInput.parse(d))
+  .validator((d: unknown) => assignInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -271,7 +271,7 @@ export const assignStaffToBooking = createServerFn({ method: "POST" })
 /** Toewijzing verwijderen. */
 export const removeAssignment = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -292,7 +292,7 @@ const openingHourInput = z.object({
 /** Eén openingsuren-rij (weekdag + seizoen) opslaan. */
 export const saveOpeningHour = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => openingHourInput.parse(d))
+  .validator((d: unknown) => openingHourInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -321,7 +321,7 @@ const exceptionInput = z.object({
 /** Sluitingsdag of afwijkende uren toevoegen of bewerken. */
 export const saveOpeningException = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => exceptionInput.parse(d))
+  .validator((d: unknown) => exceptionInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -347,7 +347,7 @@ export const saveOpeningException = createServerFn({ method: "POST" })
 /** Sluitingsdag/-periode verwijderen. */
 export const deleteOpeningException = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -372,7 +372,7 @@ const eventInput = z.object({
 /** Evenement aanmaken of bewerken. */
 export const saveEvent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => eventInput.parse(d))
+  .validator((d: unknown) => eventInput.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -398,7 +398,7 @@ export const saveEvent = createServerFn({ method: "POST" })
 /** Evenement verwijderen. */
 export const deleteEvent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();

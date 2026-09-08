@@ -153,7 +153,7 @@ const hideSchema = z.object({
 /** Bericht verbergen op de publieke site (idempotent: upsert). */
 export const hideSocialPost = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => hideSchema.parse(d))
+  .validator((d: unknown) => hideSchema.parse(d))
   .handler(async ({ data, context }): Promise<HiddenPost> => {
     await requirePermission(context, "manage_media");
     const { ensureSocialTables } = await import("@/lib/social-admin.server");
@@ -176,7 +176,7 @@ const unhideSchema = z.object({ platform: z.string().min(1).max(40), postId: z.s
 /** Bericht opnieuw tonen op de publieke site. */
 export const unhideSocialPost = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => unhideSchema.parse(d))
+  .validator((d: unknown) => unhideSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_media");
     const { ensureSocialTables } = await import("@/lib/social-admin.server");
@@ -220,7 +220,7 @@ const postSchema = z.object({
 /** Nieuw eigen bericht aanmaken. */
 export const createSocialPost = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => postSchema.parse(d))
+  .validator((d: unknown) => postSchema.parse(d))
   .handler(async ({ data, context }): Promise<SocialPost> => {
     await requirePermission(context, "manage_media");
     const { ensureSocialTables } = await import("@/lib/social-admin.server");
@@ -252,7 +252,7 @@ const hardDeleteBlueskySchema = z.object({ postUri: z.string().trim().min(1).max
  */
 export const hardDeleteBlueskyPost = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => hardDeleteBlueskySchema.parse(d))
+  .validator((d: unknown) => hardDeleteBlueskySchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_media");
 
@@ -280,7 +280,7 @@ export const hardDeleteBlueskyPost = createServerFn({ method: "POST" })
 /** Eigen bericht bijwerken. */
 export const updateSocialPost = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => postSchema.extend({ id: z.string().min(1) }).parse(d))
+  .validator((d: unknown) => postSchema.extend({ id: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }): Promise<SocialPost> => {
     await requirePermission(context, "manage_media");
     const { ensureSocialTables } = await import("@/lib/social-admin.server");
@@ -309,7 +309,7 @@ export const updateSocialPost = createServerFn({ method: "POST" })
 /** Eigen bericht verwijderen. */
 export const deleteSocialPost = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().min(1) }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_media");
     const { ensureSocialTables } = await import("@/lib/social-admin.server");

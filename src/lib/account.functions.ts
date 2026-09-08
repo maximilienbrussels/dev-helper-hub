@@ -52,7 +52,7 @@ export const listMyOrders = createServerFn({ method: "GET" })
 // database trigger — we schrijven hier dus enkel de losse velden.
 export const updateMyProfile = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         first_name: z.string().trim().min(1).max(80),
@@ -77,7 +77,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
 // schakelaar niet afhankelijk is van de algemene "opslaan"-knop.
 export const updateMyNotificationPref = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         key: z.enum(["notify_orders", "notify_academy", "notify_newsletter"]),

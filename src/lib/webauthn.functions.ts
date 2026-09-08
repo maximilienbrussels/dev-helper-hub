@@ -52,7 +52,7 @@ export const startPasskeyRegistration = createServerFn({ method: "POST" })
 /** Registratie stap 2: verifieert het antwoord van de authenticator en slaat de credential op. */
 export const finishPasskeyRegistration = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         response: z.record(z.string(), z.unknown()),
@@ -103,7 +103,7 @@ export const finishPasskeyRegistration = createServerFn({ method: "POST" })
 
 /** Login stap 1 (publiek): geeft altijd opties terug, ongeacht of het e-mailadres bestaat. */
 export const startPasskeyLogin = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ email: z.string().trim().toLowerCase().email().max(254).optional() }).parse(d),
   )
   .handler(async ({ data }) => {
@@ -164,7 +164,7 @@ export const startPasskeyLogin = createServerFn({ method: "POST" })
 
 /** Login stap 2 (publiek): verifieert het antwoord en levert een verify-token op om de sessie te starten. */
 export const finishPasskeyLogin = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().trim().toLowerCase().email().max(254).optional(),
@@ -275,7 +275,7 @@ export const listMyPasskeys = createServerFn({ method: "GET" })
 /** Verwijdert een eigen passkey, via de RLS-context van de gebruiker. */
 export const deleteMyPasskey = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { dbAdmin } = await import("@/lib/db-admin.server");
     const { error } = await dbAdmin
@@ -290,7 +290,7 @@ export const deleteMyPasskey = createServerFn({ method: "POST" })
 /** Hernoemt een eigen passkey (bv. "iPhone van Max"), via de RLS-context. */
 export const renameMyPasskey = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), name: z.string().trim().min(1).max(60) }).parse(d),
   )
   .handler(async ({ data, context }) => {

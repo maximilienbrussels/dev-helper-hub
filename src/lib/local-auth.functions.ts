@@ -14,7 +14,7 @@ const safeNext = (value: unknown, fallback = "/account") =>
 
 /** Aanmelden met e-mailadres en wachtwoord. */
 export const loginWithPassword = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ email: emailSchema, password: z.string().min(1).max(200) }).parse(d),
   )
   .handler(async ({ data }) => {
@@ -30,7 +30,7 @@ export const loginWithPassword = createServerFn({ method: "POST" })
 
 /** Huidige sessie ophalen op basis van de bewaarde token. */
 export const sessionFromToken = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ token: z.string().min(10).max(4000) }).parse(d))
+  .validator((d: unknown) => z.object({ token: z.string().min(10).max(4000) }).parse(d))
   .handler(async ({ data }) => {
     const auth = await import("./local-auth.server");
     try {
@@ -54,7 +54,7 @@ export const sessionFromToken = createServerFn({ method: "POST" })
 
 /** Inloglink of bevestigingslink omzetten naar een sessie. */
 export const redeemAuthToken = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         token: z.string().min(6).max(300),
@@ -73,7 +73,7 @@ export const redeemAuthToken = createServerFn({ method: "POST" })
 
 /** Nieuw wachtwoord instellen met een herstel-token uit de mail. */
 export const resetPasswordWithToken = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ token: z.string().min(6).max(300), password: passwordSchema }).parse(d),
   )
   .handler(async ({ data }) => {
@@ -91,7 +91,7 @@ export const resetPasswordWithToken = createServerFn({ method: "POST" })
 /** Wachtwoord wijzigen terwijl je ingelogd bent. */
 export const changePassword = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({ currentPassword: z.string().max(200).optional(), password: passwordSchema })
       .parse(d),
@@ -112,7 +112,7 @@ export const changePassword = createServerFn({ method: "POST" })
 /** Naam of avatar bijwerken. */
 export const updateOwnProfile = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         name: z.string().trim().max(160).optional(),

@@ -51,7 +51,7 @@ const updateSchema = z.object({
 /** Naam, soort en verhaaltje van één dier aanpassen. */
 export const updateAnimal = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => updateSchema.parse(d))
+  .validator((d: unknown) => updateSchema.parse(d))
   .handler(async ({ data, context }): Promise<AdminAnimal[]> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");
@@ -72,7 +72,7 @@ const imageSchema = z.object({
 /** Profielfoto van één dier instellen of wissen. */
 export const setAnimalImage = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => imageSchema.parse(d))
+  .validator((d: unknown) => imageSchema.parse(d))
   .handler(async ({ data, context }): Promise<AdminAnimal[]> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");

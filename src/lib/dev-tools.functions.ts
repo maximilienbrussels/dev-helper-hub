@@ -113,7 +113,7 @@ export const getDevStatus = createServerFn({ method: "GET" }).handler(async (): 
 
 export const setDevSecret = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         key: z.enum([

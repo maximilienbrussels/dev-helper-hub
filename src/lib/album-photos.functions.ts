@@ -90,7 +90,7 @@ const addSchema = z.object({
 /** Foto's aan een album toevoegen (achteraan). */
 export const addAlbumPhotos = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => addSchema.parse(d))
+  .validator((d: unknown) => addSchema.parse(d))
   .handler(async ({ data, context }): Promise<AlbumPhotoMap> => {
     await requirePermission(context, "manage_media");
     const email = (context.claims as { email?: string } | null)?.email ?? null;
@@ -120,7 +120,7 @@ const updateSchema = z.object({
 /** Bijschrift van één foto aanpassen. */
 export const updateAlbumPhoto = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => updateSchema.parse(d))
+  .validator((d: unknown) => updateSchema.parse(d))
   .handler(async ({ data, context }): Promise<AlbumPhotoMap> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");
@@ -135,7 +135,7 @@ export const updateAlbumPhoto = createServerFn({ method: "POST" })
 /** Foto verwijderen — ook het bestand in de bucket. */
 export const deleteAlbumPhoto = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }): Promise<AlbumPhotoMap> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");
@@ -159,7 +159,7 @@ export const deleteAlbumPhoto = createServerFn({ method: "POST" })
 /** Nieuwe volgorde binnen één album bewaren. */
 export const reorderAlbumPhotos = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ albumKey, ids: z.array(z.string().uuid()).max(200) }).parse(d),
   )
   .handler(async ({ data, context }): Promise<AlbumPhotoMap> => {

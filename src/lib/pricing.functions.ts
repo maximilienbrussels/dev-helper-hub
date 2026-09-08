@@ -38,7 +38,7 @@ export const fetchPricingList = createServerFn({ method: "GET" }).handler(async 
 
 export const savePricing = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ key: z.string().min(1).max(120), amount: z.number().min(0).max(1000000) }).parse(d),
   )
   .handler(async ({ data, context }): Promise<{ ok: true }> => {

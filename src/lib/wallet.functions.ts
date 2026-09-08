@@ -19,7 +19,7 @@ const schema = z.object({
 export type WalletPassInput = z.infer<typeof schema>;
 
 export const googleWalletPassUrl = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => schema.parse(data))
+  .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const { generateGoogleWalletPassUrl } = await import("@/lib/google-wallet.server");
     const url = await generateGoogleWalletPassUrl(data);

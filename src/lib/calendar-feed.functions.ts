@@ -103,7 +103,7 @@ export const getMyCalendarFeed = createServerFn({ method: "POST" })
 /** Filters van de persoonlijke feed bewaren. */
 export const saveCalendarFeedFilters = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         includeAssigned: z.boolean(),

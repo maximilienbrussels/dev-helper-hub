@@ -29,7 +29,7 @@ const pageKeySchema = z.enum(PAGE_CONTENT_KEYS);
 
 /** Volledige inhoud van één "Boeken & huren"-pagina (fail-safe). */
 export const fetchPageContent = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ key: pageKeySchema }).parse(d))
+  .validator((d: unknown) => z.object({ key: pageKeySchema }).parse(d))
   .handler(async ({ data }): Promise<PageContent> => {
     try {
       const { loadPageContent } = await import("./page-content.server");
@@ -55,7 +55,7 @@ const heroSchema = z.object({
 /** Hero (afbeelding + titel/tekst) van een pagina bewaren. */
 export const savePageHeroContent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => heroSchema.parse(d))
+  .validator((d: unknown) => heroSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_services");
     const { savePageHero } = await import("./page-content.server");
@@ -104,7 +104,7 @@ const blockSchema = z.object({
 /** Blok (kaart) toevoegen of bewerken. */
 export const savePageBlockContent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => blockSchema.parse(d))
+  .validator((d: unknown) => blockSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ id: string }> => {
     await requirePermission(context, "manage_services");
     const { upsertPageBlock } = await import("./page-content.server");
@@ -144,7 +144,7 @@ const deleteSchema = z.object({ id: z.string().uuid() });
 /** Blok verwijderen. */
 export const deletePageBlockContent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => deleteSchema.parse(d))
+  .validator((d: unknown) => deleteSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_services");
     const { deletePageBlock } = await import("./page-content.server");
@@ -164,7 +164,7 @@ const reorderSchema = z.object({ ids: z.array(z.string().uuid()).min(1) });
 /** Volgorde van blokken op een pagina bewaren. */
 export const reorderPageBlockContent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => reorderSchema.parse(d))
+  .validator((d: unknown) => reorderSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_services");
     const { reorderPageBlocks } = await import("./page-content.server");
@@ -187,7 +187,7 @@ const gallerySchema = z.object({
 /** Fotogalerij van een pagina bewaren (volgorde + verwijderde beelden opruimen). */
 export const savePageGalleryContent = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => gallerySchema.parse(d))
+  .validator((d: unknown) => gallerySchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_services");
     const { savePageGallery } = await import("./page-content.server");
