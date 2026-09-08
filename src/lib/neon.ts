@@ -30,7 +30,6 @@ export function getNeonClient(): NeonClient {
         // De Data API krijgt onze eigen sessietoken mee wanneer die er is.
         getToken: async () => {
           if (typeof window === "undefined") return "";
-          const { readSessionToken } = await import("./neon-auth-compat");
           return readSessionToken() ?? "";
         },
       },
