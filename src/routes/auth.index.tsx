@@ -30,6 +30,7 @@ import { checkPortalAccess } from "@/lib/portal-access.functions";
 import { getPublicUrl } from "@/lib/urls";
 import { resolveAppMode, postLoginPathFor } from "@/lib/app-mode";
 import { isPasskeySupported, passkeyErrorMessage } from "@/lib/auth/passkey";
+import { deliveryReasonMessage } from "@/lib/auth-errors";
 
 type BrevoProbe = { url: string; status: number; ok: boolean; ms: number; body: string } | null;
 type BrevoDiagnosis = {
@@ -179,6 +180,7 @@ function AuthPage() {
 
       if (res.delivered) toast.success("Activatiecode verstuurd naar je werkmailbox.");
       else if (res.devCode) toast.info(`Mailen lukte niet — je code is ${res.devCode}`);
+      else toast.error(deliveryReasonMessage(res.reason ?? null), { duration: 10000 });
     } catch (err) {
       toast.error(
         err instanceof Error && err.message
