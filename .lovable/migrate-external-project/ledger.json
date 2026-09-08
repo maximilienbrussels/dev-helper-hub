@@ -7,8 +7,8 @@
       "capability": "tanstack_start_application_stack",
       "source": "src/, package.json, vite.config.ts, tsconfig.json, public/",
       "outcome": "preserve",
-      "status": "code_migrated",
-      "next_action": "Install dependencies and run build to verify compilation"
+      "status": "verified",
+      "next_action": "Build and homepage render verified; runtime database features need DATABASE_URL"
     },
     {
       "capability": "neon_postgresql_database",
