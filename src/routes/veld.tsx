@@ -25,15 +25,19 @@ export const Route = createFileRoute("/veld")({
 });
 
 const TABS = [
-  { to: "/veld", label: "Vandaag", Icon: CalendarDays, exact: true },
-  { to: "/veld/aanvragen", label: "Aanvragen", Icon: Inbox },
-  { to: "/veld/scanner", label: "Scan", Icon: QrCode, center: true },
-  { to: "/veld/diensten", label: "Diensten", Icon: Sprout },
-  { to: "/veld/meer", label: "Meer", Icon: MoreHorizontal },
+  { to: "/veld", label: "Vandaag", Icon: CalendarDays, exact: true, need: "view_today" },
+  { to: "/veld/aanvragen", label: "Aanvragen", Icon: Inbox, need: "view_requests" },
+  { to: "/veld/scanner", label: "Scan", Icon: QrCode, center: true, need: "manage_orders" },
+  { to: "/veld/diensten", label: "Diensten", Icon: Sprout, need: "view_services" },
+  { to: "/veld/meer", label: "Meer", Icon: MoreHorizontal, need: null },
 ] as const;
 
 function FieldLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { can, isLoading } = usePermissions();
+  // Tijdens het laden tonen we alles; daarna alleen wat deze medewerker mag.
+  const tabs = TABS.filter((tab) => !tab.need || isLoading || can(tab.need));
+
 
   return (
     <PortalProvider standaloneLang>
