@@ -1,5 +1,6 @@
 import { createClient } from "@neondatabase/neon-js";
 import { DEFAULT_NEON_AUTH_URL } from "./neon-auth-url";
+import { readSessionToken } from "./neon-auth-compat";
 
 /**
  * Enkel nog de Data API. Authenticatie gebeurt volledig in eigen beheer
