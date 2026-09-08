@@ -49,3 +49,26 @@ export function friendlyAuthError(message: string): string {
     return "Er ging iets mis bij het aanmelden. Probeer het opnieuw.";
   return message || "Er ging iets mis. Probeer het opnieuw.";
 }
+
+/**
+ * Vertaalt de technische faalreden van de mailer naar één begrijpelijke zin.
+ * Client-veilig: bevat geen sleutels of hostnamen.
+ */
+export function deliveryReasonMessage(reason?: string | null): string {
+  switch (reason) {
+    case "no_database":
+      return "De accountdatabank is onbereikbaar. Probeer het straks opnieuw.";
+    case "missing_brevo_key":
+    case "missing_smtp_config":
+    case "missing_from_address":
+      return "De mailverzending is op dit adres nog niet ingesteld. Verwittig een beheerder.";
+    case "mail_unauthorized":
+      return "We kunnen momenteel geen e-mail versturen: de mailkoppeling wordt hersteld. Probeer het over enkele minuten opnieuw.";
+    case "mail_rate_limited":
+      return "Er zijn net te veel mails verstuurd. Probeer het over enkele minuten opnieuw.";
+    case "missing_recipient":
+      return "Vul een geldig e-mailadres in.";
+    default:
+      return "Versturen van de e-mail lukte niet. Probeer het straks opnieuw.";
+  }
+}
