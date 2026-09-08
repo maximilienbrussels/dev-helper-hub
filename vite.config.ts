@@ -98,7 +98,7 @@ export default defineConfig({
       chunkSizeWarningLimit: 900,
       rolldownOptions: {
         output: {
-          advancedChunks: {
+          codeSplitting: {
             groups: [
               { name: "vendor-pdf", test: /node_modules\/(jspdf|html2canvas|canvg|dompurify)/ },
               { name: "vendor-charts", test: /node_modules\/(recharts|d3-|victory)/ },
