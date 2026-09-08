@@ -25,7 +25,7 @@ async function logVerification(entered: string, result: VerifyResult) {
  * Toont de volledige naam van de houder zodat de echtheid controleerbaar is.
  */
 export const verifyCertificaat = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ token: z.string().trim().min(10).max(64) }).parse(d))
+  .validator((d: unknown) => z.object({ token: z.string().trim().min(10).max(64) }).parse(d))
   .handler(async ({ data }) => {
     const { checkRateLimit, clientIdentifier } = await import("@/lib/rate-limit.server");
     const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -50,7 +50,7 @@ export const verifyCertificaat = createServerFn({ method: "POST" })
  * dezelfde publieke gegevens als de token-route.
  */
 export const verifyCertificaatByCode = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ code: z.string().trim().min(6).max(32) }).parse(d))
+  .validator((d: unknown) => z.object({ code: z.string().trim().min(6).max(32) }).parse(d))
   .handler(async ({ data }) => {
     const { checkRateLimit, clientIdentifier } = await import("@/lib/rate-limit.server");
     const { getRequestHeaders } = await import("@tanstack/react-start/server");

@@ -1,5 +1,6 @@
 import { createClient } from "@neondatabase/neon-js";
 import { DEFAULT_NEON_AUTH_URL } from "./neon-auth-url";
+import { readSessionToken } from "./neon-auth-compat";
 
 /**
  * Enkel nog de Data API. Authenticatie gebeurt volledig in eigen beheer
@@ -29,7 +30,6 @@ export function getNeonClient(): NeonClient {
         // De Data API krijgt onze eigen sessietoken mee wanneer die er is.
         getToken: async () => {
           if (typeof window === "undefined") return "";
-          const { readSessionToken } = await import("./neon-auth-compat");
           return readSessionToken() ?? "";
         },
       },

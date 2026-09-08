@@ -15,7 +15,7 @@ const MESSAGES = {
 
 export const requestMyEmailChange = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ email: z.string().trim().email() }).parse(d))
+  .validator((d: unknown) => z.object({ email: z.string().trim().email() }).parse(d))
   .handler(async ({ context, data }) => {
     const { requestEmailChange } = await import("@/lib/email-change.server");
     const result = await requestEmailChange(context.userId, data.email);
@@ -24,7 +24,7 @@ export const requestMyEmailChange = createServerFn({ method: "POST" })
   });
 
 export const confirmMyEmailChange = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ token: z.string().min(10).max(200) }).parse(d))
+  .validator((d: unknown) => z.object({ token: z.string().min(10).max(200) }).parse(d))
   .handler(async ({ data }) => {
     const { confirmEmailChange } = await import("@/lib/email-change.server");
     const result = await confirmEmailChange(data.token);

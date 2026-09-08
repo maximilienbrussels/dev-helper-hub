@@ -25,7 +25,7 @@ type PhotonFeature = {
 // We houden dit als server function zodat de front-end geen CORS-issues heeft
 // en we de request/response kunnen normaliseren.
 export const searchAddress = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ q: z.string().trim().min(2).max(120) }).parse(d))
+  .validator((d: unknown) => z.object({ q: z.string().trim().min(2).max(120) }).parse(d))
   .handler(async ({ data }): Promise<AddressSuggestion[]> => {
     const url = `https://photon.komoot.io/api?q=${encodeURIComponent(
       data.q,

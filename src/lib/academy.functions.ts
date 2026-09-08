@@ -68,7 +68,7 @@ export const listAcademies = createServerFn({ method: "GET" }).handler(async () 
 
 // ---------- Publiek: één academy + willekeurige vragen (zonder correct antwoord) ----------
 export const startExamen = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ slug: z.string(), doelgroep: z.enum(["kids", "16plus"]).default("kids") }).parse(d),
   )
   .handler(async ({ data }) => {
@@ -170,7 +170,7 @@ export const startExamen = createServerFn({ method: "POST" })
 
 // ---------- Publiek: directe feedback op één antwoord ("Wist je dat?") ----------
 export const checkAntwoord = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({ vraag_id: z.string().uuid(), gekozen_index: z.number().int().min(0).max(9) })
       .parse(d),
@@ -204,7 +204,7 @@ export const checkAntwoord = createServerFn({ method: "POST" })
 // ---------- Beveiligd: examen inleveren + certificaat uitgeven ----------
 export const submitExamen = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         academy_id: z.string().uuid(),
@@ -367,7 +367,7 @@ export const listMyCertificaten = createServerFn({ method: "GET" })
 // ---------- Beveiligd: één certificaat + academy-info ----------
 export const getCertificaat = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const sql = db();
     type Cert = {
@@ -412,7 +412,7 @@ export const getCertificaat = createServerFn({ method: "POST" })
 // ---------- Beveiligd: eigen (meest recente) certificaat voor één academie-slug ----------
 export const getCertificaatBySlug = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ slug: z.string().min(1) }).parse(d))
+  .validator((d: unknown) => z.object({ slug: z.string().min(1) }).parse(d))
   .handler(async ({ data, context }) => {
     const sql = db();
     const row = (

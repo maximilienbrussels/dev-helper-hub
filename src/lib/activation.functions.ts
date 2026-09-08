@@ -12,7 +12,7 @@ const emailSchema = z.string().trim().toLowerCase().email().max(254);
  * worden meteen geweigerd — er bestaat geen publieke registratie.
  */
 export const requestActivationCode = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: emailSchema,
@@ -57,7 +57,7 @@ export const requestActivationCode = createServerFn({ method: "POST" })
  * De whitelistcheck gebeurt hier opnieuw, zodat het endpoint op zichzelf veilig is.
  */
 export const activateAccount = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: emailSchema,

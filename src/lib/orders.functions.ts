@@ -26,7 +26,7 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 /** Detail van één bestelling: bestelregels + statusgeschiedenis. */
 export const getOrderDetail = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.number().int().positive() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.number().int().positive() }).parse(d))
   .handler(async ({ data, context }) => {
     const order = await context.supabase
       .from("orders")
@@ -70,7 +70,7 @@ export const getOrderDetail = createServerFn({ method: "POST" })
 /** Werkt de status van een bestelling bij en logt de wijziging. */
 export const updateOrderStatus = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.number().int().positive(),

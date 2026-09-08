@@ -9,7 +9,7 @@ import { z } from "zod";
  * Sleutelwaarden verlaten de server nooit: enkel lengte en prefix.
  */
 export const diagnoseBrevo = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().trim().toLowerCase().email().max(254),

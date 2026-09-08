@@ -140,7 +140,7 @@ export const listMedia = createServerFn({ method: "GET" })
 /** Nieuw bestand opladen. */
 export const uploadMedia = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => uploadSchema.parse(d))
+  .validator((d: unknown) => uploadSchema.parse(d))
   .handler(async ({ data, context }): Promise<MediaAsset> => {
     await requirePermission(context, "manage_media");
     const size = validateBinary(data.mimeType, data.dataBase64);
@@ -170,7 +170,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
 /** Bestaand beeld vervangen: het ID (en dus elke URL op de site) blijft gelijk. */
 export const replaceMedia = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -221,7 +221,7 @@ export const replaceMedia = createServerFn({ method: "POST" })
 /** Metadata (alt-tekst, titel, beschrijving, categorie) bijwerken. */
 export const updateMediaMeta = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -254,7 +254,7 @@ export const updateMediaMeta = createServerFn({ method: "POST" })
 /** Definitief verwijderen. */
 export const deleteMedia = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");
@@ -282,7 +282,7 @@ export const listTrashedMedia = createServerFn({ method: "GET" })
 /** Herstelt een zacht verwijderd beeld vanuit de prullenbak. */
 export const restoreMedia = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");
@@ -293,7 +293,7 @@ export const restoreMedia = createServerFn({ method: "POST" })
 /** Definitief verwijderen: rij én opgeslagen bestand zijn onherroepelijk weg. */
 export const hardDeleteMedia = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_media");
     const { db } = await import("@/lib/neon.server");
@@ -373,7 +373,7 @@ async function registerKey(key: string, email: string | null): Promise<MediaAsse
 /** Eén bestand uit de opslag in de bibliotheek opnemen (en meteen bruikbaar maken). */
 export const registerStorageObject = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ key: z.string().min(1).max(400) }).parse(d))
+  .validator((d: unknown) => z.object({ key: z.string().min(1).max(400) }).parse(d))
   .handler(async ({ data, context }): Promise<MediaAsset> => {
     await requirePermission(context, "manage_media");
     const email = (context.claims as { email?: string } | null)?.email ?? null;
@@ -383,7 +383,7 @@ export const registerStorageObject = createServerFn({ method: "POST" })
 /** Meerdere bestanden (bv. een hele map) in één keer registreren. */
 export const registerStorageObjects = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ keys: z.array(z.string().min(1).max(400)).min(1).max(200) }).parse(d),
   )
   .handler(async ({ data, context }): Promise<{ assets: MediaAsset[]; failed: string[] }> => {

@@ -53,7 +53,7 @@ export const fetchApiKeys = createServerFn({ method: "GET" })
 
 export const createApiKeyFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         name: z.string().trim().min(2).max(100),
@@ -70,7 +70,7 @@ export const createApiKeyFn = createServerFn({ method: "POST" })
 
 export const setApiKeyActiveFn = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), active: z.boolean() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid(), active: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertManageSettings(context);
     const { setApiKeyActive } = await import("@/lib/api-keys.server");

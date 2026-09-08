@@ -3,7 +3,7 @@ import { z } from "zod";
 
 /** Publieke status van één boeking, op basis van de referentie uit de mail/URL. */
 export const getBookingStatus = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ reference: z.string().min(4).max(40) }).parse(d),
   )
   .handler(async ({ data }) => {

@@ -6,7 +6,7 @@ import { normalizeMailLang } from "./email-copy";
 
 /** Bevestigingsmail voor een gift, met gestructureerde betaalreferentie. */
 export const sendDonationConfirmation = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().email(),
@@ -47,7 +47,7 @@ export const sendDonationConfirmation = createServerFn({ method: "POST" })
  * nooit een willekeurig ontvangeradres opgeven.
  */
 export const sendContactMessage = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         inbox: z.string().max(40).optional(),
@@ -88,7 +88,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
  */
 export const sendSystemTestEmail = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({ to: z.string().trim().email().optional() })
       .partial()

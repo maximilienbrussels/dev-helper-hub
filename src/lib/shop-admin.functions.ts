@@ -44,7 +44,7 @@ const productCreate = z.object({
 
 export const createProduct = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => productCreate.parse(input))
+  .validator((input: unknown) => productCreate.parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_products");
@@ -108,7 +108,7 @@ const PRODUCT_FIELDS = [
 
 export const updateProduct = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => productPatch.parse(input))
+  .validator((input: unknown) => productPatch.parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_products");
@@ -153,7 +153,7 @@ export const updateProduct = createServerFn({ method: "POST" })
 /** Zacht verwijderen: het product verdwijnt uit de webshop maar blijft 30 dagen herstelbaar. */
 export const deleteProduct = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => z.object({ id: z.number().int().positive() }).parse(input))
+  .validator((input: unknown) => z.object({ id: z.number().int().positive() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_products");
@@ -184,7 +184,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
 
 export const addProductImage = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z
       .object({
         product_id: z.number().int().positive(),
@@ -226,7 +226,7 @@ export const addProductImage = createServerFn({ method: "POST" })
 /** Ontkoppelt een foto van het product; het bestand blijft in de opslag staan. */
 export const removeProductImage = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => z.object({ id: z.number().int().positive() }).parse(input))
+  .validator((input: unknown) => z.object({ id: z.number().int().positive() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_products");
@@ -247,7 +247,7 @@ export const removeProductImage = createServerFn({ method: "POST" })
 /** Ontkoppelt de foto én wist het bronbestand definitief uit de opslag. */
 export const deleteProductImageFile = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => z.object({ id: z.number().int().positive() }).parse(input))
+  .validator((input: unknown) => z.object({ id: z.number().int().positive() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_products");
@@ -283,7 +283,7 @@ export const deleteProductImageFile = createServerFn({ method: "POST" })
 /** Zet (of wist) de hoofd- of hoverfoto van een product. */
 export const setProductImageRole = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z
       .object({
         id: z.number().int().positive(),
@@ -316,7 +316,7 @@ export const setProductImageRole = createServerFn({ method: "POST" })
 
 export const reorderProductImages = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z.object({ ids: z.array(z.number().int().positive()).max(50) }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -343,7 +343,7 @@ const recipientInput = z.object({
 
 export const addOrderRecipient = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => recipientInput.parse(input))
+  .validator((input: unknown) => recipientInput.parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_orders");
@@ -368,7 +368,7 @@ export const addOrderRecipient = createServerFn({ method: "POST" })
 
 export const updateOrderRecipient = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -406,7 +406,7 @@ export const updateOrderRecipient = createServerFn({ method: "POST" })
 
 export const removeOrderRecipient = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_orders");
@@ -453,7 +453,7 @@ export const getShopOrders = createServerFn({ method: "GET" })
 
 export const getPortalProductImages = createServerFn({ method: "GET" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => z.object({ productId: z.number().int().positive() }).parse(input))
+  .validator((input: unknown) => z.object({ productId: z.number().int().positive() }).parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "view_shop");
@@ -481,7 +481,7 @@ const shopHeroInput = z
 
 export const updateShopHero = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => shopHeroInput.parse(input))
+  .validator((input: unknown) => shopHeroInput.parse(input))
   .handler(async ({ data, context }) => {
     try {
       await requirePermission(context, "manage_products");

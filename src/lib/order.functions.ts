@@ -7,7 +7,7 @@ import { orderInputSchema } from "./order-schema";
  * Rate-limited per IP zodat de mailer niet als spamrelay kan dienen.
  */
 export const createOrder = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => orderInputSchema.parse(d))
+  .validator((d: unknown) => orderInputSchema.parse(d))
   .handler(async ({ data }) => {
     const { guardRate } = await import("./email-guard.server");
     await guardRate("order", data.email);

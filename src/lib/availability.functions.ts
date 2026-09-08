@@ -23,7 +23,7 @@ async function sql() {
 
 /** Beschikbare tijdsloten + sluitingsdagen voor één formule in een periode. */
 export const fetchAvailability = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ formula, from: date, to: date }).parse(d),
   )
   .handler(async ({ data }): Promise<AvailabilityResponse> => {
@@ -101,7 +101,7 @@ export type AvailabilityAdminSnapshot = {
 /** Alle beschikbaarheidsgegevens voor het beheer in één keer. */
 export const fetchAvailabilityAdmin = createServerFn({ method: "GET" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ from: date, to: date }).parse(d))
+  .validator((d: unknown) => z.object({ from: date, to: date }).parse(d))
   .handler(async ({ data, context }): Promise<AvailabilityAdminSnapshot> => {
     await requirePermission(context, "view_calendar");
     const db = await sql();
@@ -169,7 +169,7 @@ export const fetchAvailabilityAdmin = createServerFn({ method: "GET" })
 /** Dag blokkeren of vrijgeven voor publieke boekingen. */
 export const toggleBlockedDate = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ date, reason: z.string().trim().max(160).optional() }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -192,7 +192,7 @@ export const toggleBlockedDate = createServerFn({ method: "POST" })
 /** Standaardregel per weekdag toevoegen of bijwerken. */
 export const saveSlotRule = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -232,7 +232,7 @@ export const saveSlotRule = createServerFn({ method: "POST" })
 /** Standaardregel verwijderen. */
 export const deleteSlotRule = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();
@@ -247,7 +247,7 @@ export const deleteSlotRule = createServerFn({ method: "POST" })
  */
 export const generateSlots = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ from: date, to: date, formulaType: formula.optional() }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -270,7 +270,7 @@ export const generateSlots = createServerFn({ method: "POST" })
 /** Handmatig slot toevoegen of overriden (capaciteit, blokkeren, notitie). */
 export const saveSlot = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -315,7 +315,7 @@ export const saveSlot = createServerFn({ method: "POST" })
 /** Slot verwijderen. */
 export const deleteSlot = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_calendar");
     const db = await sql();

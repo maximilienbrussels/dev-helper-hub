@@ -115,7 +115,7 @@ export const auditAcademyTranslations = createServerFn({ method: "GET" })
 /** Kaart aanmaken of bijwerken. Nieuwe kaarten starten altijd als concept. */
 export const saveAcademy = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => academyInputSchema.parse(d))
+  .validator((d: unknown) => academyInputSchema.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_academy");
     const { id, ...fields } = data;
@@ -139,7 +139,7 @@ export const saveAcademy = createServerFn({ method: "POST" })
 /** Kaart tijdelijk uitschakelen of opnieuw zichtbaar maken. */
 export const setAcademyActive = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), is_active: z.boolean() }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -155,7 +155,7 @@ export const setAcademyActive = createServerFn({ method: "POST" })
 /** Rechtstreeks publiceren of offline halen — enkel met publicatierecht. */
 export const setAcademyStatus = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), status: z.enum(["concept", "gepubliceerd"]) }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -176,7 +176,7 @@ export const setAcademyStatus = createServerFn({ method: "POST" })
 /** Kaart verwijderen — enkel met publicatierecht. */
 export const deleteAcademy = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "publish_academy");
     const { error } = await dbAdmin.from("academies").delete().eq("id", data.id);
@@ -187,7 +187,7 @@ export const deleteAcademy = createServerFn({ method: "POST" })
 /** Vraag toevoegen of bijwerken (drietalig). */
 export const saveVraag = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => vraagInputSchema.parse(d))
+  .validator((d: unknown) => vraagInputSchema.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_academy");
     if (data.correcte_optie_index >= data.opties.length) {
@@ -217,7 +217,7 @@ export const saveVraag = createServerFn({ method: "POST" })
 /** Vraag verwijderen. */
 export const deleteVraag = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_academy");
     const { error } = await dbAdmin.from("academy_vragen").delete().eq("id", data.id);
@@ -228,7 +228,7 @@ export const deleteVraag = createServerFn({ method: "POST" })
 /** Goedkeuring vragen om een kaart live te zetten (mail naar de verantwoordelijke). */
 export const requestAcademyPublication = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => publishRequestSchema.parse(d))
+  .validator((d: unknown) => publishRequestSchema.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_academy");
     const email = (context.claims as { email?: string } | undefined)?.email ?? null;
@@ -281,7 +281,7 @@ export const requestAcademyPublication = createServerFn({ method: "POST" })
 /** Beslissen over een publicatieverzoek — enkel met publicatierecht. */
 export const decideAcademyPublication = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => publishDecisionSchema.parse(d))
+  .validator((d: unknown) => publishDecisionSchema.parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "publish_academy");
 

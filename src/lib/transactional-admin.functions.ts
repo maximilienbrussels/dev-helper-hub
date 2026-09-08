@@ -30,7 +30,7 @@ async function assertAdmin(context: { userId: string; claims?: unknown }) {
 
 export const fetchTransactionalLogs = createServerFn({ method: "GET" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z
       .object({ status: z.enum(["all", "failed", "sent"]).default("all") })
       .default({ status: "all" })
@@ -54,7 +54,7 @@ export const fetchTransactionalLogs = createServerFn({ method: "GET" })
 
 export const resendTransactionalEmail = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((input: unknown) => z.object({ logId: z.string().uuid() }).parse(input))
+  .validator((input: unknown) => z.object({ logId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context as never);
     const { resendEmailLog } = await import("@/lib/transactional-email.server");

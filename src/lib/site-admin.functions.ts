@@ -45,7 +45,7 @@ const pageSchema = z.object({
 /** Zichtbaarheid van één publieke pagina bewaren. */
 export const saveSitePage = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => pageSchema.parse(d))
+  .validator((d: unknown) => pageSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -85,7 +85,7 @@ const flagSchema = z.object({ key: z.string().min(1).max(60), enabled: z.boolean
 /** Module (feature flag) aan- of uitzetten. */
 export const saveFeatureFlag = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => flagSchema.parse(d))
+  .validator((d: unknown) => flagSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -117,7 +117,7 @@ const maintenanceSchema = z.object({
 /** Onderhoudsmodus voor de publieke site. */
 export const saveMaintenance = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => maintenanceSchema.parse(d))
+  .validator((d: unknown) => maintenanceSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -163,7 +163,7 @@ const announcementSchema = z.object({
 /** Aankondigingsbalk bewaren (één actieve balk tegelijk). */
 export const saveAnnouncement = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => announcementSchema.parse(d))
+  .validator((d: unknown) => announcementSchema.parse(d))
   .handler(async ({ data, context }): Promise<SiteAnnouncement> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -233,7 +233,7 @@ const contactSchema = z.object({
 /** Adres, telefoon, e-mail en socials — meteen zichtbaar op de hele site. */
 export const saveSiteContact = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => contactSchema.parse(d))
+  .validator((d: unknown) => contactSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -288,7 +288,7 @@ const socialLinksSchema = z.array(socialLinkSchema).max(60);
 /** Alle social-mediakanalen (aan/uit, URL, volgorde) in één keer bewaren. */
 export const saveSocialLinks = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => socialLinksSchema.parse(d))
+  .validator((d: unknown) => socialLinksSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -322,7 +322,7 @@ const chatSettingsSchema = z.object({
 /** AI & chatbeheer: zichtbaarheid, motorkeuze en offlinebericht. */
 export const saveChatSettings = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => chatSettingsSchema.parse(d))
+  .validator((d: unknown) => chatSettingsSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");
@@ -359,7 +359,7 @@ const paymentSettingsSchema = z.object({
 /** Betaalinstellingen: "Betalen bij afhaling" aan/uit + instructietekst. */
 export const savePaymentSettings = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => paymentSettingsSchema.parse(d))
+  .validator((d: unknown) => paymentSettingsSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await requirePermission(context, "manage_settings");
     const { ensureSiteTables } = await import("./site-config.server");

@@ -15,7 +15,7 @@ export type CertificateScanResult =
 /** Zoekt het certificaat achter een gescande QR of een ingetikte code. */
 export const resolveCertificateScan = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ value: z.string().trim().min(3).max(400) }).parse(d))
+  .validator((d: unknown) => z.object({ value: z.string().trim().min(3).max(400) }).parse(d))
   .handler(async ({ data, context }): Promise<CertificateScanResult> => {
     await requirePermission(context, "manage_orders");
     const { findCertificate } = await import("./academy-print.server");
@@ -27,7 +27,7 @@ export const resolveCertificateScan = createServerFn({ method: "POST" })
 /** Markeert het certificaat als afgedrukt (met tijdstip en medewerker). */
 export const markCertificatePrinted = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     await requirePermission(context, "manage_orders");
     const { setCertificatePrinted } = await import("./academy-print.server");

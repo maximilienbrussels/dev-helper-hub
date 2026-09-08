@@ -207,7 +207,7 @@ async function assertNoSelfLockout(context: Ctx, role: string) {
 /** Zet één recht aan of uit voor één rol. */
 export const setRolePermission = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         role: z.string().regex(ROLE_KEY),
@@ -236,7 +236,7 @@ export const setRolePermission = createServerFn({ method: "POST" })
 /** Alle rechten van één rol in één keer opslaan. */
 export const saveRolePermissions = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         role: z.string().regex(ROLE_KEY),
@@ -267,7 +267,7 @@ export const saveRolePermissions = createServerFn({ method: "POST" })
 /** Nieuwe (eigen) rol aanmaken met meertalige labels. */
 export const createRole = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         role: z.string().trim().regex(ROLE_KEY, "Gebruik enkel kleine letters, cijfers en _"),
@@ -314,7 +314,7 @@ export const createRole = createServerFn({ method: "POST" })
 /** Labels van een rol bijwerken. */
 export const updateRoleLabels = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         role: z.string().regex(ROLE_KEY),
@@ -338,7 +338,7 @@ export const updateRoleLabels = createServerFn({ method: "POST" })
 /** Eigen rol verwijderen (ingebouwde rollen blijven). */
 export const deleteRole = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) => z.object({ role: z.string().regex(ROLE_KEY) }).parse(d))
+  .validator((d: unknown) => z.object({ role: z.string().regex(ROLE_KEY) }).parse(d))
   .handler(async ({ data, context }) => {
     await assertRight(context, "manage_rights");
     if ((BUILTIN_ROLES as readonly string[]).includes(data.role)) {
@@ -354,7 +354,7 @@ export const deleteRole = createServerFn({ method: "POST" })
 /** Rollen van één gebruiker vervangen door de aangevinkte set. */
 export const setUserRoles = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         userId: z.string().uuid(),
@@ -404,7 +404,7 @@ export const setUserRoles = createServerFn({ method: "POST" })
 /** Account actief/inactief zetten. */
 export const setUserActive = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ userId: z.string().uuid(), active: z.boolean() }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -428,7 +428,7 @@ export const setUserActive = createServerFn({ method: "POST" })
 /** Nieuwe medewerker toevoegen (uitnodiging + aangevinkte rollen). */
 export const addPortalUser = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         email: z.string().trim().email().max(255),

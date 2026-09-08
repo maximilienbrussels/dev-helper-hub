@@ -92,6 +92,25 @@ export default defineConfig({
   vite: {
     plugins: [neonAuthGlobalScopeFix, ...fieldPwa],
 
+    // Zware bibliotheken en het beheerportaal in eigen brokken, zodat de
+    // publieke en veld-builds ze niet meeslepen.
+    build: {
+      chunkSizeWarningLimit: 900,
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              { name: "vendor-pdf", test: /node_modules\/(jspdf|html2canvas|canvg|dompurify)/ },
+              { name: "vendor-charts", test: /node_modules\/(recharts|d3-|victory)/ },
+              { name: "vendor-react", test: /node_modules\/(react|react-dom|scheduler)\// },
+              { name: "portal", test: /src\/(components\/portal|pages\/portal)\//, maxSize: 600 * 1024 },
+            ],
+          },
+        },
+      },
+    },
+
+
     // Eigen domeinen mogen de dev-server aanspreken (lokale hosts-mapping om
     // de domeinscheiding admin/publiek te testen).
     server: { allowedHosts: ["maximilien.site", "maximilien.brussels", "maximilien.app"] },

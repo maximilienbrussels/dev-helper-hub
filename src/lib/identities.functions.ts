@@ -34,7 +34,7 @@ export const getMyIdentities = createServerFn({ method: "GET" })
 
 export const unlinkMyIdentity = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ provider: z.enum(["google", "github", "mastodon", "bluesky"]) }).parse(d),
   )
   .handler(async ({ context, data }) => {
