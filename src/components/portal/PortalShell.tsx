@@ -52,6 +52,8 @@ import { MLogo } from "@/components/MLogo";
 import { DevSecretsModal } from "@/components/DevSecretsModal";
 import { MaximAdminAiBubble } from "@/components/portal/copilot/MaximAdminAiBubble";
 import { PickupScanner } from "@/components/portal/PickupScanner";
+import { FieldHandoffItem } from "@/components/portal/FieldHandoffItem";
+
 
 type NavGroup = "work" | "content" | "admin";
 
