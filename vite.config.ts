@@ -103,7 +103,7 @@ export default defineConfig({
               { name: "vendor-pdf", test: /node_modules\/(jspdf|html2canvas|canvg|dompurify)/ },
               { name: "vendor-charts", test: /node_modules\/(recharts|d3-|victory)/ },
               { name: "vendor-react", test: /node_modules\/(react|react-dom|scheduler)\// },
-              { name: "portal", test: /src\/(components\/portal|pages\/portal)\// },
+              { name: "portal", test: /src\/(components\/portal|pages\/portal)\//, maxSize: 600 * 1024 },
             ],
           },
         },
