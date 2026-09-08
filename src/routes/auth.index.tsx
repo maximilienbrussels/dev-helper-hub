@@ -250,10 +250,14 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword(parsed.data);
       if (error) {
+        const raw = error.message ?? "";
+        const storing = /tijdelijk niet beschikbaar|onbereikbaar|databank/i.test(raw);
         toast.error(
           error.status === 429
             ? "Te veel pogingen. Probeer het straks opnieuw."
-            : "Aanmelden mislukt. Controleer je e-mailadres en wachtwoord.",
+            : storing
+              ? raw
+              : "Aanmelden mislukt. Controleer je e-mailadres en wachtwoord.",
         );
         return;
       }
@@ -284,6 +288,8 @@ function AuthPage() {
         toast.success("Inlogcode verstuurd naar je werkmailbox.");
       } else if (res.devCode) {
         toast.info(`Mailen lukte niet — je inlogcode is ${res.devCode}`, { duration: 30000 });
+      } else {
+        toast.error(deliveryReasonMessage(res.reason ?? null), { duration: 10000 });
       }
       if (!res.delivered && res.preview) setBrevoPrompt(true);
 
