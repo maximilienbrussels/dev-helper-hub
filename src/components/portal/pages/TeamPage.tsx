@@ -42,7 +42,7 @@ import {
   type TeamAvatarMap,
 } from "@/lib/team-avatars.functions";
 import { TEAM, BOARD } from "@/lib/about-content";
-import { UPLOAD_ACCEPT } from "@/lib/storage-client";
+import { UPLOAD_ACCEPT, uploadToStorage } from "@/lib/storage-client";
 import { cn } from "@/lib/utils";
 
 export function TeamPage() {
@@ -222,7 +222,7 @@ function TeamPhotos() {
     if (!file) return;
     setBusy(personKey);
     try {
-      const { uploadToStorage } = await import("@/lib/storage-client");
+      // uploadToStorage komt uit de statische import hierboven.
       const { publicUrl } = await uploadToStorage(file, "team");
       await apply(personKey, publicUrl);
     } catch {
