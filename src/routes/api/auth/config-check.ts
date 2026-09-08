@@ -69,23 +69,51 @@ export const Route = createFileRoute("/api/auth/config-check")({
           if (!present) missing.push(label);
         }
 
+        // Let op: zonder connection string geeft de stub-client lege arrays
+        // terug zonder te falen. Daarom eerst expliciet checken of er een
+        // databank ingesteld is, anders zou "db: true" een storing verbergen.
         let db = false;
         let dbError: string | undefined;
         try {
-          const { db: sql } = await import("@/lib/neon.server");
-          await sql()`select 1`;
-          db = true;
+          const { db: sql, hasDatabase } = await import("@/lib/neon.server");
+          if (!hasDatabase()) {
+            dbError = "Geen databank ingesteld (DATABASE_URL / NEON_DATABASE_URL ontbreekt).";
+          } else {
+            await sql()`select 1`;
+            db = true;
+          }
         } catch (error) {
           dbError = error instanceof Error ? error.message : String(error);
+        }
+
+        // Mailverzending: Brevo-sleutel of volledige SMTP-instellingen.
+        let mailReady = false;
+        let mailTransport: "brevo" | "smtp" | null = null;
+        let mailError: string | undefined;
+        try {
+          const { brevoApiKey } = await import("@/lib/brevo-override.server");
+          const { smtpConfigStatus } = await import("@/lib/smtp.server");
+          const smtp = await smtpConfigStatus();
+          if (brevoApiKey()) {
+            mailReady = true;
+            mailTransport = "brevo";
+          } else if (smtp.complete) {
+            mailReady = true;
+            mailTransport = "smtp";
+          } else {
+            mailError = "Geen BREVO_API_KEY en geen volledige SMTP-instellingen.";
+          }
+        } catch (error) {
+          mailError = error instanceof Error ? error.message : String(error);
         }
 
         const { checkAuthConfig } = await import("@/lib/auth-config");
         const { siteOrigin } = await import("@/lib/google-oauth.server");
         const oauth = checkAuthConfig(siteOrigin(request));
 
-        const ok = db && missing.length === 0 && oauth.warnings.length === 0;
+        const ok = db && mailReady && missing.length === 0 && oauth.warnings.length === 0;
         if (!ok) {
-          console.error("[Config Check]", { missing, dbError, warnings: oauth.warnings });
+          console.error("[Config Check]", { missing, dbError, mailError, warnings: oauth.warnings });
         }
 
         return json(
@@ -93,6 +121,8 @@ export const Route = createFileRoute("/api/auth/config-check")({
             status: ok ? "ok" : "error",
             db,
             ...(dbError ? { db_error: dbError } : {}),
+            mail: { ready: mailReady, transport: mailTransport },
+            ...(mailError ? { mail_error: mailError } : {}),
             secrets_present: missing.length === 0,
             secrets,
             ...(missing.length ? { missing_keys: missing } : {}),

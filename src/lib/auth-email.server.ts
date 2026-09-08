@@ -19,6 +19,12 @@ export async function requestOrigin(): Promise<string> {
   const { getRequestHeaders } = await import("@tanstack/react-start/server");
   const { siteOrigin } = await import("./email.server");
   const headers = new Headers(getRequestHeaders() as unknown as Record<string, string>);
+  // Achter een proxy (Vercel) staat het publieke adres in x-forwarded-host.
+  const forwardedHost = headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  if (forwardedHost) {
+    const proto = headers.get("x-forwarded-proto")?.split(",")[0]?.trim() || "https";
+    return `${proto}://${forwardedHost}`.replace(/\/+$/, "");
+  }
   const origin = headers.get("origin");
   if (origin && /^https?:\/\//.test(origin)) return origin.replace(/\/+$/, "");
   const host = headers.get("host");

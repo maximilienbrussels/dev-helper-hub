@@ -30,6 +30,7 @@ import { checkPortalAccess } from "@/lib/portal-access.functions";
 import { getPublicUrl } from "@/lib/urls";
 import { resolveAppMode, postLoginPathFor } from "@/lib/app-mode";
 import { isPasskeySupported, passkeyErrorMessage } from "@/lib/auth/passkey";
+import { deliveryReasonMessage } from "@/lib/auth-errors";
 
 type BrevoProbe = { url: string; status: number; ok: boolean; ms: number; body: string } | null;
 type BrevoDiagnosis = {
@@ -179,6 +180,7 @@ function AuthPage() {
 
       if (res.delivered) toast.success("Activatiecode verstuurd naar je werkmailbox.");
       else if (res.devCode) toast.info(`Mailen lukte niet — je code is ${res.devCode}`);
+      else toast.error(deliveryReasonMessage(res.reason ?? null), { duration: 10000 });
     } catch (err) {
       toast.error(
         err instanceof Error && err.message
@@ -250,10 +252,14 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword(parsed.data);
       if (error) {
+        const raw = error.message ?? "";
+        const storing = /tijdelijk niet beschikbaar|onbereikbaar|databank/i.test(raw);
         toast.error(
           error.status === 429
             ? "Te veel pogingen. Probeer het straks opnieuw."
-            : "Aanmelden mislukt. Controleer je e-mailadres en wachtwoord.",
+            : storing
+              ? raw
+              : "Aanmelden mislukt. Controleer je e-mailadres en wachtwoord.",
         );
         return;
       }
@@ -284,6 +290,8 @@ function AuthPage() {
         toast.success("Inlogcode verstuurd naar je werkmailbox.");
       } else if (res.devCode) {
         toast.info(`Mailen lukte niet — je inlogcode is ${res.devCode}`, { duration: 30000 });
+      } else {
+        toast.error(deliveryReasonMessage(res.reason ?? null), { duration: 10000 });
       }
       if (!res.delivered && res.preview) setBrevoPrompt(true);
 
