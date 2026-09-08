@@ -396,7 +396,9 @@ export function PortalShell({ children }: { children: ReactNode }) {
                       {t("menu.security")}
                     </Link>
                   </DropdownMenuItem>
+                  <FieldHandoffItem label={t("menu.openFieldApp")} />
                   <DropdownMenuSeparator />
+
                   <DropdownMenuLabel className="flex items-center gap-2 text-[10px] tracking-wide text-muted-foreground uppercase">
                     <Languages className="size-3.5" />
                     {t("menu.language")}
