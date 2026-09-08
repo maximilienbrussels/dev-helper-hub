@@ -33,7 +33,7 @@ export type ClientErrorInput = z.input<typeof clientErrorSchema>;
 
 /** Publiek: schrijft een browserfout weg (rate-limited op IP). */
 export const logClientError = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => clientErrorSchema.parse(d))
+  .validator((d: unknown) => clientErrorSchema.parse(d))
   .handler(async ({ data }) => {
     const { checkRateLimit, clientIdentifier } = await import("@/lib/rate-limit.server");
     const { getRequestHeaders } = await import("@tanstack/react-start/server");
@@ -66,7 +66,7 @@ export const logClientError = createServerFn({ method: "POST" })
 /** Teamleden: lijst met recente fouten voor het dashboard. */
 export const listClientErrors = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         onlyReported: z.boolean().optional().default(false),
@@ -98,7 +98,7 @@ export const listClientErrors = createServerFn({ method: "POST" })
 /** Teamleden: markeert een fout als (on)opgelost. */
 export const setClientErrorResolved = createServerFn({ method: "POST" })
   .middleware([requireAuth])
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), resolved: z.boolean() }).parse(d),
   )
   .handler(async ({ data, context }) => {
