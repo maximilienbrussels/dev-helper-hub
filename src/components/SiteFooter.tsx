@@ -8,6 +8,7 @@ import type { Lang } from "@/lib/i18n";
 import { SocialCarousel } from "./SocialCarousel";
 import { LocationLink } from "./LocationLink";
 import { RoutBadge } from "./RoutBadge";
+import { PwaInstallButton } from "@/components/pwa/PwaInstallButton";
 // Farm identity constants — brief specifies address Quai du Batelage 2.
 const PHONE = "+32 2 201 56 09";
 
