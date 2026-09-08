@@ -51,7 +51,7 @@ function FieldLayout() {
 
         <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/70 bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-18px_rgba(31,42,28,0.5)] backdrop-blur-xl print:hidden">
           <ul className="mx-auto flex max-w-lg items-stretch justify-between">
-            {TABS.map(({ to, label, Icon, ...rest }) => {
+            {tabs.map(({ to, label, Icon, ...rest }) => {
               const exact = "exact" in rest && rest.exact;
               const active = exact ? pathname === to : pathname.startsWith(to);
               const center = "center" in rest && rest.center;
