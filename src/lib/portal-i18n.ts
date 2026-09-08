@@ -231,7 +231,13 @@ const dict: Dict = {
     nl: "Profiel & beveiliging",
     en: "Profile & security",
   },
+  "menu.openFieldApp": {
+    fr: "Ouvrir dans l'app terrain",
+    nl: "Openen in de veld-app",
+    en: "Open in the field app",
+  },
   "menu.theme": { fr: "Thème", nl: "Thema", en: "Theme" },
+
   "theme.light": { fr: "Clair", nl: "Licht", en: "Light" },
   "theme.dark": { fr: "Sombre", nl: "Donker", en: "Dark" },
   "theme.system": { fr: "Système", nl: "Systeem", en: "System" },

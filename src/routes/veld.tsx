@@ -5,6 +5,7 @@ import { neonSupabaseCompat as supabase } from "@/lib/neon-auth-compat";
 import { checkPortalAccess } from "@/lib/portal-access.functions";
 import { PortalProvider } from "@/lib/portal-store";
 import { pathWithMode } from "@/lib/app-mode";
+import { usePermissions } from "@/lib/use-permissions";
 import { cn } from "@/lib/utils";
 
 /**
@@ -25,15 +26,19 @@ export const Route = createFileRoute("/veld")({
 });
 
 const TABS = [
-  { to: "/veld", label: "Vandaag", Icon: CalendarDays, exact: true },
-  { to: "/veld/aanvragen", label: "Aanvragen", Icon: Inbox },
-  { to: "/veld/scanner", label: "Scan", Icon: QrCode, center: true },
-  { to: "/veld/diensten", label: "Diensten", Icon: Sprout },
-  { to: "/veld/meer", label: "Meer", Icon: MoreHorizontal },
+  { to: "/veld", label: "Vandaag", Icon: CalendarDays, exact: true, need: "view_today" },
+  { to: "/veld/aanvragen", label: "Aanvragen", Icon: Inbox, need: "view_requests" },
+  { to: "/veld/scanner", label: "Scan", Icon: QrCode, center: true, need: "manage_orders" },
+  { to: "/veld/diensten", label: "Diensten", Icon: Sprout, need: "view_services" },
+  { to: "/veld/meer", label: "Meer", Icon: MoreHorizontal, need: null },
 ] as const;
 
 function FieldLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { can, isLoading } = usePermissions();
+  // Tijdens het laden tonen we alles; daarna alleen wat deze medewerker mag.
+  const tabs = TABS.filter((tab) => !tab.need || isLoading || can(tab.need));
+
 
   return (
     <PortalProvider standaloneLang>
@@ -47,7 +52,7 @@ function FieldLayout() {
 
         <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/70 bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-18px_rgba(31,42,28,0.5)] backdrop-blur-xl print:hidden">
           <ul className="mx-auto flex max-w-lg items-stretch justify-between">
-            {TABS.map(({ to, label, Icon, ...rest }) => {
+            {tabs.map(({ to, label, Icon, ...rest }) => {
               const exact = "exact" in rest && rest.exact;
               const active = exact ? pathname === to : pathname.startsWith(to);
               const center = "center" in rest && rest.center;

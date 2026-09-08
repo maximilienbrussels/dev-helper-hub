@@ -5,7 +5,6 @@ import { PageSkeleton } from "@/components/common/PageSkeleton";
 import { SiteFooter } from "@/components/SiteFooter";
 
 import { SiteAnnouncementBar } from "@/components/SiteAnnouncementBar";
-import { PwaInstallPrompt } from "@/components/pwa/PwaInstallPrompt";
 import { AIChatDrawer } from "@/components/AIChatDrawer";
 import { MaximChatProvider } from "@/lib/maxim-chat";
 import { useSiteConfig } from "@/lib/use-site-config";
@@ -37,7 +36,6 @@ export default function PublicAppShell({ children }: { children: ReactNode }) {
         </main>
         <SiteFooter />
       </div>
-      <PwaInstallPrompt />
       {chatEnabled ? <AIChatDrawer /> : null}
     </MaximChatProvider>
   );
